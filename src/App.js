@@ -1,23 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import { onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState } from "react";
+import "./App.css";
+import Dashboard from "./components/Dashboard";
+import Signin from "./components/Signin";
+import Signup from "./components/Signup";
+import { auth } from "./firebase-config";
 
 function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container mt-5 " style={{ fontFamily: "inter" }}>
+      <h3 className="text-center my-5">
+        Wellcome to Firebase Authentication & Authorization{" "}
+      </h3>
+      <div className="row m-auto">
+        {user == null ? (
+          <>
+            <div className="col-md-6">
+              <Signup />
+            </div>
+            <div className="col-md-4">
+              <Signin />
+            </div>
+          </>
+        ) : (
+          <Dashboard />
+        )}
+      </div>
     </div>
   );
 }
